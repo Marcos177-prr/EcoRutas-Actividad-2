@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoRutas - Explorador de Mapa</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        /* Ajuste de altura completa para el mapa */
+        #map {
+            height: calc(100vh - 64px); /* Pantalla completa menos el navbar */
+            width: 100%;
+            z-index: 1;
+        }
+
+        /* Estilización de controles para cumplir con la Ley de Fitts */
+        .leaflet-control-zoom {
+            border: none !important;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1) !important;
+        }
+
+        .leaflet-control-zoom-in, .leaflet-control-zoom-out {
+            width: 44px !important; /* Tamaño aumentado para facilitar el toque */
+            height: 44px !important;
+            line-height: 44px !important;
+            color: #065f46 !important; /* Verde esmeralda */
+            font-weight: bold;
+        }
+
+        /* Reposicionamiento del control de zoom a la derecha central */
+        .leaflet-right .leaflet-control-zoom {
+            margin-right: 20px;
+            margin-top: 30vh;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 overflow-hidden">
+
+    <!-- Navbar Minimalista -->
+    <nav class="h-16 bg-emerald-800 text-white flex items-center justify-between px-6 shadow-md relative z-10">
+        <div class="flex items-center gap-2">
+            <a href="/" class="hover:text-emerald-300 transition">
+                <i class="fa-solid fa-arrow-left mr-2"></i>
+            </a>
+            <span class="font-bold tracking-tight">EcoRutas - Explorador</span>
+        </div>
+        <div class="flex gap-4">
+            <button class="bg-emerald-700 p-2 rounded-lg hover:bg-emerald-600">
+                <i class="fa-solid fa-layer-group"></i>
+            </button>
+            <button class="bg-emerald-700 p-2 rounded-lg hover:bg-emerald-600">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Contenedor del Mapa -->
+    <div id="map"></div>
+
+    <!-- Panel Flotante de Información (Baja Densidad) -->
+    <div class="absolute bottom-6 left-6 right-6 md:left-auto md:w-80 bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-2xl z-[1000] border border-emerald-100">
+        <div class="flex items-center gap-3">
+            <div class="bg-emerald-100 p-3 rounded-full text-emerald-700">
+                <i class="fa-solid fa-location-crosshairs"></i>
+            </div>
+            <div>
+                <h3 class="font-bold text-gray-800">Ubicación Actual</h3>
+                <p class="text-xs text-gray-500">Cerca de: Sierra Madre del Sur</p>
+            </div>
+        </div>
+        <button class="w-full mt-4 bg-emerald-600 text-white py-2 rounded-xl font-semibold hover:bg-emerald-700 transition">
+            Iniciar Ruta Segura
+        </button>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Inicialización del mapa (Centrado en CDMX por defecto, ajustable)
+        const map = L.map('map', {
+            zoomControl: false // Deshabilitamos el predeterminado para moverlo
+        }).setView([19.4326, -99.1332], 13);
+
+        // Añadir Capa de OpenStreetMap con estilo outdoor/topo
+        L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap contributors, Tiles style by Humanitarian OpenStreetMap Team'
+        }).addTo(map);
+
+        // Añadir Control de Zoom en el lado derecho para mayor ergonomía (Ley de Fitts)
+        L.control.zoom({
+            position: 'topright'
+        }).addTo(map);
+
+        // Marcador de ejemplo
+        L.marker([19.4326, -99.1332]).addTo(map)
+            .bindPopup('Punto de Inicio: EcoRutas')
+            .openPopup();
+    </script>
+</body>
+</html>
